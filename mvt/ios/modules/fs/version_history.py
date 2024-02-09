@@ -28,6 +28,22 @@ class IOSVersionHistory(IOSExtraction):
         module_options: Optional[dict] = None,
         log: logging.Logger = logging.getLogger(__name__),
         results: Optional[list] = None,
+        """This function initializes the class with optional parameters for file path, target path, results path, module options, logger, and results list.
+        Parameters:
+            - file_path (str): Path to the file to be processed.
+            - target_path (str): Path to the target directory for the processed file.
+            - results_path (str): Path to the directory where results will be saved.
+            - module_options (dict): Optional dictionary of module options.
+            - log (logging.Logger): Optional logger for logging messages.
+            - results (list): Optional list to store results.
+        Returns:
+            - None: This function does not return anything.
+        Processing Logic:
+            - Initialize class with optional parameters.
+            - Set default values for optional parameters if not provided.
+            - Use logger to log messages.
+            - Store results in results list if provided."""
+        
     ) -> None:
         super().__init__(
             file_path=file_path,
@@ -39,6 +55,21 @@ class IOSVersionHistory(IOSExtraction):
         )
 
     def serialize(self, record: dict) -> Union[dict, list]:
+        """Function: Serialize record into a dictionary with timestamp, module, event, and data.
+        Parameters:
+            - record (dict): Dictionary containing record data.
+        Returns:
+            - Union[dict, list]: Dictionary with timestamp, module, event, and data.
+        Processing Logic:
+            - Serialize record into dictionary.
+            - Record timestamp as "isodate".
+            - Record module as class name.
+            - Record event as "ios_version".
+            - Record data as "Recorded iOS version" + record['os_version'].
+        Example:
+            record = {"isodate": "2021-07-12", "os_version": "14.6"}
+            serialize(record) -> {"timestamp": "2021-07-12", "module": "serialize", "event": "ios_version", "data": "Recorded iOS version 14.6"}"""
+        
         return {
             "timestamp": record["isodate"],
             "module": self.__class__.__name__,
@@ -48,6 +79,8 @@ class IOSVersionHistory(IOSExtraction):
 
     def run(self) -> None:
         for found_path in self._get_fs_files_from_patterns(IOS_ANALYTICS_JOURNAL_PATHS):
+        """"""
+        
             with open(found_path, "r", encoding="utf-8") as analytics_log:
                 log_line = json.loads(analytics_log.readline(5_000_000).strip())
 
